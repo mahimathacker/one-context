@@ -28,6 +28,12 @@ body {
     sans-serif;
 }
 
+button,
+input,
+textarea {
+  font: inherit;
+}
+
 svg {
   width: 1.1em;
   fill: none;
@@ -191,32 +197,57 @@ svg {
   text-transform: uppercase;
 }
 
-.workspace-shell {
-  min-height: 180px;
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 22px 70px rgba(28, 35, 30, 0.08);
+  overflow: hidden;
+}
+
+.input-panel,
+.result-placeholder {
+  min-height: 620px;
   padding: 34px;
+}
+
+.result-placeholder {
+  border-left: 1px solid var(--line);
+  background-color: #eeeee8;
+  background-image: radial-gradient(#cfd0c8 0.8px, transparent 0.8px);
+  background-size: 16px 16px;
+}
+
+.panel-heading {
+  margin-bottom: 34px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background-color: var(--card);
-  background-image: radial-gradient(#deded7 0.8px, transparent 0.8px);
-  background-size: 16px 16px;
-  box-shadow: 0 22px 70px rgba(28, 35, 30, 0.08);
+  gap: 20px;
 }
 
-.workspace-shell > div {
+.panel-heading > div {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.workspace-shell p {
+.panel-heading h2 {
   margin: 0;
   font-size: 19px;
   font-weight: 650;
   letter-spacing: -0.035em;
+}
+
+.panel-heading > p {
+  max-width: 215px;
+  margin: 1px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: right;
 }
 
 .step {
@@ -229,9 +260,205 @@ svg {
   font-size: 10px;
 }
 
-.workspace-status {
-  color: #8d918b;
+.field-label {
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.field-label span {
+  color: #93968f;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.textarea-wrap {
+  position: relative;
+}
+
+textarea {
+  width: 100%;
+  min-height: 145px;
+  padding: 15px 16px 32px;
+  display: block;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  color: var(--ink);
+  background: #faf9f5;
+  font-size: 14px;
+  line-height: 1.55;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+textarea::placeholder {
+  color: #a3a49e;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(255, 92, 53, 0.1);
+}
+
+.field-limit {
+  position: absolute;
+  right: 11px;
+  bottom: 9px;
+  color: #969a94;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+}
+
+.upload-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.upload-box {
+  position: relative;
+  min-width: 0;
+  min-height: 160px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px dashed #c6c7c0;
+  border-radius: 10px;
+  background: #faf9f5;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-box:hover,
+.upload-box:focus-within {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.upload-box input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.file-icon {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 11px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.file-icon svg {
+  width: 19px;
+}
+
+.upload-box strong {
+  font-size: 13px;
+}
+
+.upload-box small {
+  margin-top: 6px;
+  color: #8a8d87;
+  font-size: 10px;
+}
+
+.analyze-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 9px;
+  color: white;
+  background: var(--dark);
+  font-weight: 650;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.analyze-button:hover {
+  transform: translateY(-1px);
+  background: #2c342f;
+}
+
+.analyze-button svg {
+  font-size: 18px;
+}
+
+.privacy-note {
+  margin: 11px 0 0;
+  color: #969992;
+  font-size: 10px;
+  text-align: center;
+}
+
+.placeholder-copy {
+  min-height: 470px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.placeholder-copy > span {
+  margin-bottom: 18px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--accent);
+  background: var(--card);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.placeholder-copy h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  letter-spacing: -0.03em;
+}
+
+.placeholder-copy p {
+  margin: 0;
+  color: var(--muted);
   font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .result-placeholder {
+    min-height: 480px;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .input-panel {
+    min-height: auto;
+  }
 }
 
 @media (max-width: 620px) {
@@ -261,11 +488,31 @@ svg {
     margin: 5px 0 0;
   }
 
-  .workspace-shell {
-    min-height: 150px;
+  .input-panel,
+  .result-placeholder {
     padding: 24px 18px;
-    flex-direction: column;
+  }
+
+  .workspace {
     border-radius: 13px;
+  }
+
+  .panel-heading {
+    margin-bottom: 26px;
+    flex-direction: column;
+  }
+
+  .panel-heading > p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-box {
+    min-height: 135px;
   }
 }
 

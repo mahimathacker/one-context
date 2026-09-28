@@ -1,3 +1,5 @@
+import { IssueIntakeForm } from "@/components/issue-intake-form";
+
 function ArrowIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -48,12 +50,22 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="workspace-shell" aria-label="OneContext demo workspace">
-          <div>
-            <span className="step">01</span>
-            <p>Multimodal issue intake</p>
-          </div>
-          <span className="workspace-status">Interface coming next</span>
+        <section className="workspace" aria-label="OneContext demo workspace">
+          <IssueIntakeForm />
+
+          <aside className="result-placeholder">
+            <div className="panel-heading">
+              <div>
+                <span className="step">02</span>
+                <h2>Structured understanding</h2>
+              </div>
+            </div>
+            <div className="placeholder-copy">
+              <span>TXT + IMG + WAV</span>
+              <h3>One result, grounded in every input</h3>
+              <p>The validated analysis will appear here after inference.</p>
+            </div>
+          </aside>
         </section>
       </div>
     </main>
