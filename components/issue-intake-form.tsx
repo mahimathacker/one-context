@@ -8,6 +8,13 @@ import {
   uploadLimits,
 } from "@/lib/analysis";
 
+type IssueIntakeFormProps = {
+  isAnalyzing: boolean;
+  serverError: string;
+  onAnalyze: (formData: FormData) => Promise<void>;
+  onInputChange: () => void;
+};
+
 function UploadIcon({ kind }: { kind: "image" | "audio" }) {
   return kind === "image" ? (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -23,14 +30,18 @@ function UploadIcon({ kind }: { kind: "image" | "audio" }) {
   );
 }
 
-export function IssueIntakeForm() {
+export function IssueIntakeForm({
+  isAnalyzing,
+  serverError,
+  onAnalyze,
+  onInputChange,
+}: IssueIntakeFormProps) {
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [audio, setAudio] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
   const audioInput = useRef<HTMLInputElement>(null);
   const imagePreviewUrl = useRef<string | null>(null);
@@ -46,7 +57,7 @@ export function IssueIntakeForm() {
   function chooseImage(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
     setError("");
-    setNotice("");
+    onInputChange();
 
     if (!file) {
       removeImage();
@@ -74,7 +85,7 @@ export function IssueIntakeForm() {
   function chooseAudio(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
     setError("");
-    setNotice("");
+    onInputChange();
 
     if (!file) {
       removeAudio();
@@ -108,6 +119,7 @@ export function IssueIntakeForm() {
     imagePreviewUrl.current = null;
     setImagePreview(null);
     setImage(null);
+    onInputChange();
     if (imageInput.current) imageInput.current.value = "";
   }
 
@@ -116,24 +128,28 @@ export function IssueIntakeForm() {
     audioPreviewUrl.current = null;
     setAudioPreview(null);
     setAudio(null);
+    onInputChange();
     if (audioInput.current) audioInput.current.value = "";
   }
 
-  function validateSubmission(event: FormEvent<HTMLFormElement>) {
+  async function submitForAnalysis(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setNotice("");
 
     if (!text.trim() && !image && !audio) {
       setError("Add written context, a screenshot, or a WAV voice note before analyzing.");
       return;
     }
 
-    setNotice("Inputs are valid and ready for the server integration.");
+    const formData = new FormData();
+    if (text.trim()) formData.set("text", text.trim());
+    if (image) formData.set("image", image);
+    if (audio) formData.set("audio", audio);
+    await onAnalyze(formData);
   }
 
   return (
-    <form className="input-panel" onSubmit={validateSubmission}>
+    <form className="input-panel" onSubmit={submitForAnalysis}>
       <div className="panel-heading">
         <div>
           <span className="step">01</span>
@@ -154,7 +170,7 @@ export function IssueIntakeForm() {
           onChange={(event) => {
             setText(event.target.value);
             setError("");
-            setNotice("");
+            onInputChange();
           }}
           placeholder="This started happening after I changed my account settings…"
         />
@@ -229,26 +245,29 @@ export function IssueIntakeForm() {
         </div>
       </div>
 
-      {error && (
+      {(error || serverError) && (
         <div className="form-message error-message" role="alert">
-          <span>!</span> {error}
+          <span>!</span> {error || serverError}
         </div>
       )}
 
-      {notice && (
-        <div className="form-message notice-message" role="status">
-          <span>✓</span> {notice}
-        </div>
-      )}
-
-      <button className="analyze-button" type="submit">
-        Analyze issue
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h14M14 7l5 5-5 5" />
-        </svg>
+      <button className="analyze-button" type="submit" disabled={isAnalyzing}>
+        {isAnalyzing ? (
+          <>
+            <span className="spinner" /> Reasoning across inputs…
+          </>
+        ) : (
+          <>
+            Analyze issue
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5" />
+            </svg>
+          </>
+        )}
       </button>
       <p className="privacy-note">
-        WAV is intentional: this demo focuses on native multimodal reasoning, not transcoding.
+        Your API key stays on the server. WAV keeps this demo focused on reasoning, not
+        transcoding.
       </p>
     </form>
   );

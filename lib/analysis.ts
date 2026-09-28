@@ -11,6 +11,16 @@ export const analysisSchema = z.object({
 
 export type Analysis = z.infer<typeof analysisSchema>;
 
+export const analysisResponseSchema = z.object({
+  data: analysisSchema,
+  meta: z.object({
+    model: z.string(),
+    modalities: z.array(z.enum(["text", "image", "audio"])),
+  }),
+});
+
+export type AnalysisResponse = z.infer<typeof analysisResponseSchema>;
+
 export const uploadLimits = {
   textCharacters: 4_000,
   imageBytes: 5 * 1024 * 1024,
