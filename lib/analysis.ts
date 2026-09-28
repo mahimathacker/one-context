@@ -20,4 +20,4 @@ export const uploadLimits = {
 export const acceptedImageTypes = ["image/jpeg", "image/png", "image/webp"] as const;
 
 // WAV is intentional: this demo is about native multimodal reasoning, not transcoding.
-export const acceptedAudioTypes = ["audio/wav", "audio/x-wav"] as const;
+export const acceptedAudioTypes = ["audio/wav", "audio/x-wav", "audio/wave"] as const;

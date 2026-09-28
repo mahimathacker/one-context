@@ -328,16 +328,10 @@ textarea:focus {
   position: relative;
   min-width: 0;
   min-height: 160px;
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   border: 1px dashed #c6c7c0;
   border-radius: 10px;
   background: #faf9f5;
-  text-align: center;
-  cursor: pointer;
+  overflow: hidden;
   transition: border-color 0.2s, background 0.2s;
 }
 
@@ -352,6 +346,23 @@ textarea:focus {
   width: 1px;
   height: 1px;
   opacity: 0;
+}
+
+.upload-box > label {
+  min-height: 160px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.upload-content {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .file-icon {
@@ -369,14 +380,114 @@ textarea:focus {
   width: 19px;
 }
 
-.upload-box strong {
+.upload-content strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 13px;
 }
 
-.upload-box small {
+.upload-content small {
   margin-top: 6px;
   color: #8a8d87;
   font-size: 10px;
+}
+
+.image-preview {
+  position: absolute;
+  inset: 0;
+  background: #deded8;
+}
+
+.image-preview img {
+  object-fit: cover;
+}
+
+.file-footer,
+.audio-footer {
+  position: absolute;
+  z-index: 2;
+  right: 7px;
+  bottom: 7px;
+  left: 7px;
+  padding: 7px 8px 7px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 7px;
+  color: white;
+  background: rgba(23, 26, 24, 0.88);
+  backdrop-filter: blur(5px);
+}
+
+.file-footer > span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-footer button,
+.audio-footer button {
+  width: 21px;
+  height: 21px;
+  margin-left: auto;
+  padding: 0;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: rgba(255, 255, 255, 0.13);
+  cursor: pointer;
+}
+
+.audio-footer audio {
+  width: 135px;
+  height: 28px;
+}
+
+.form-message {
+  margin-top: 15px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.form-message span {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+}
+
+.error-message {
+  border-color: #ffd0c4;
+  color: #8a2e19;
+  background: #fff0eb;
+}
+
+.error-message span {
+  background: var(--accent);
+}
+
+.notice-message {
+  border-color: #cde7d3;
+  color: #25713d;
+  background: #effaef;
+}
+
+.notice-message span {
+  background: #38a65a;
 }
 
 .analyze-button {
@@ -512,6 +623,10 @@ textarea:focus {
   }
 
   .upload-box {
+    min-height: 135px;
+  }
+
+  .upload-box > label {
     min-height: 135px;
   }
 }
