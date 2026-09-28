@@ -70,14 +70,6 @@ async function encodeFile(file: File) {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.TOGETHER_API_KEY;
-  if (!apiKey) {
-    return errorResponse(
-      "The server is missing TOGETHER_API_KEY. Add it to .env.local and restart the app.",
-      500,
-    );
-  }
-
   let formData: FormData;
   try {
     formData = await request.formData();
@@ -122,6 +114,52 @@ export async function POST(request: Request) {
     if (audio.size > uploadLimits.audioBytes) {
       return errorResponse("The voice note must be 10 MB or smaller.");
     }
+  }
+
+  const modalities = [
+    ...(text ? (["text"] as const) : []),
+    ...(image ? (["image"] as const) : []),
+    ...(audio ? (["audio"] as const) : []),
+  ];
+
+  if (process.env.ONECONTEXT_DEMO_MODE === "true") {
+    return NextResponse.json({
+      data: {
+        summary:
+          "A user cannot sign in because the account is locked. A comparison account works in the same browser, suggesting the problem is specific to this account rather than the login page generally.",
+        intent: "Report and resolve an account-specific storefront access problem.",
+        important_details: [
+          "The login attempt is rejected before the user can access the storefront.",
+          "The reporter reproduced the behavior in Chrome.",
+          "A different demo account can sign in successfully from the same browser.",
+        ],
+        visual_context: image
+          ? [
+              "Sample observation: the login screen displays an account-locked error after submission.",
+            ]
+          : [],
+        audio_context: audio
+          ? [
+              "Sample observation: the reporter says the locked-out account fails consistently while the standard account works.",
+            ]
+          : [],
+        suggested_action:
+          "Confirm the account lock state, review the reason and unlock policy, and provide the user with an appropriate recovery path.",
+      },
+      meta: {
+        model: "No model — sample data",
+        modalities,
+        mode: "sample",
+      },
+    });
+  }
+
+  const apiKey = process.env.TOGETHER_API_KEY;
+  if (!apiKey) {
+    return errorResponse(
+      "The server is missing TOGETHER_API_KEY. Add it to .env.local and restart the app.",
+      500,
+    );
   }
 
   const content: ContentPart[] = [
@@ -201,11 +239,8 @@ export async function POST(request: Request) {
       data: parsed.data,
       meta: {
         model: MODEL_ID,
-        modalities: [
-          ...(text ? ["text"] : []),
-          ...(image ? ["image"] : []),
-          ...(audio ? ["audio"] : []),
-        ],
+        modalities,
+        mode: "live",
       },
     });
   } catch (error) {

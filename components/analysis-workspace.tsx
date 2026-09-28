@@ -50,7 +50,13 @@ function ResultPanel({
           <span className="step">02</span>
           <h2>Structured understanding</h2>
         </div>
-        {result && <span className="result-status">Analysis complete</span>}
+        {result && (
+          <span className={`result-status ${result.meta.mode === "sample" ? "sample" : ""}`}>
+            {result.meta.mode === "sample"
+              ? "Sample response — no inference performed"
+              : "Analysis complete"}
+          </span>
+        )}
       </div>
 
       {!result && !isAnalyzing && (

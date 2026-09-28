@@ -597,6 +597,14 @@ textarea:focus {
   color: #32a153;
 }
 
+.result-status.sample {
+  color: #8a2e19;
+}
+
+.result-status.sample::before {
+  color: var(--accent);
+}
+
 .result-loading {
   min-height: 470px;
   display: flex;

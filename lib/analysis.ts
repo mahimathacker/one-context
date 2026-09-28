@@ -16,6 +16,7 @@ export const analysisResponseSchema = z.object({
   meta: z.object({
     model: z.string(),
     modalities: z.array(z.enum(["text", "image", "audio"])),
+    mode: z.enum(["live", "sample"]),
   }),
 });
 
