@@ -21,23 +21,30 @@ export default function Home() {
           OneContext
         </a>
 
-        <span className="demo-badge">
-          <i /> Developer demo
-        </span>
+        <div className="header-meta" aria-label="Inference configuration">
+          <span>Model</span>
+          <strong>Inkling</strong>
+          <span>Runtime</span>
+          <strong>Serverless</strong>
+        </div>
       </header>
 
       <div className="page-shell" id="top">
         <section className="hero">
-          <p className="eyebrow">One model · One request · Shared context</p>
+          <div className="hero-index" aria-hidden="true">
+            OC / 001
+          </div>
+          <p className="eyebrow">Multimodal issue intake / one inference call</p>
           <h1>
-            Let the model see the <em>whole issue.</em>
+            Three inputs.<br />
+            <em>One shared context.</em>
           </h1>
           <p className="hero-copy">
-            Combine written context, a screenshot, and a WAV voice note in one native
-            multimodal inference workflow with Together AI Serverless.
+            Give Inkling the written report, the screenshot, and the original voice note
+            together—without building separate transcription and vision pipelines.
           </p>
 
-          <div className="flow-chips" aria-label="OneContext input flow">
+          <div className="signal-line" aria-label="OneContext input flow">
             <span>Text</span>
             <b>+</b>
             <span>Image</span>
