@@ -1,49 +1,67 @@
 # OneContext
 
-OneContext is a small Next.js and TypeScript demonstration of native multimodal
-inference with Together AI Serverless.
+**OneContext is a developer demo showing how text, image, and audio can be processed
+together in a single multimodal inference call using Together AI Serverless and
+Inkling.**
 
-![OneContext showing text, screenshot, audio, and a structured sample result](./app/image.png)
+Instead of building separate speech-to-text, vision, and reasoning pipelines,
+OneContext sends all available context to one natively multimodal model and returns a
+validated structured result.
 
-## Main objective
+![OneContext showing text, screenshot, audio, and a structured sample result](./public/onecontext-demo.png)
 
-The project demonstrates one technical idea:
+> **Demo status:** The repository contains the live Together and Inkling integration
+> path. The public sample configuration uses deterministic demo data because live
+> Together inference requires prepaid API credits. Demo mode does not perform AI
+> inference.
 
-> **OneContext does not transcribe audio first and then pass a transcript to another
-> language model. Inkling receives the text, image, and audio together and reasons over
-> them within the same multimodal model and inference call.**
+## What this demonstrates
 
-Product and issue feedback is only the sample scenario. This is not a complete
-issue-management product.
+Product and issue feedback is the sample scenario. The developer lesson is the
+architecture behind it.
 
-## Technical understanding
-
-Multimodal applications are often built as several pipelines:
-
-```text
-Audio -> transcription model
-Image -> vision model
-Outputs -> language model
-```
-
-OneContext uses a natively multimodal model instead:
+### Traditional multimodal pipeline
 
 ```text
-Text + Image + Audio
-          |
-Next.js server route
-          |
-Together Serverless / thinkingmachines/Inkling
-          |
-Validated structured JSON
+Audio ──→ Speech-to-text ──┐
+                           │
+Image ──→ Vision model ────┼──→ LLM ──→ Result
+                           │
+Text ──────────────────────┘
 ```
 
-The browser sends a multipart form to the Next.js route. The route validates the files,
-encodes the image and WAV audio, and sends the available modalities in one Together chat
-completion request. The requested JSON structure is validated with Zod before it is sent
-back to the browser.
+### OneContext
 
-## Structured result
+```text
+Text ───┐
+Image ──┼──→ Inkling via Together Serverless ──→ Structured result
+Audio ──┘
+```
+
+**OneContext does not transcribe audio first and then pass a transcript to another
+language model. Inkling receives the text, image, and audio together and reasons over
+them within the same multimodal model and inference call.**
+
+## How it works
+
+```text
+Browser
+  -> Next.js interface
+  -> POST /api/analyze
+  -> server-side file validation and encoding
+  -> Together Serverless / thinkingmachines/Inkling
+  -> structured response
+  -> Zod validation
+  -> results interface
+```
+
+The Together API key is used only by the server route and is never exposed to the
+browser. At least one input is required, and missing modalities are supported.
+
+## Output contract
+
+The route requests this structure from Inkling and validates it before returning it to
+the interface:
 
 ```json
 {
@@ -56,27 +74,33 @@ back to the browser.
 }
 ```
 
-## Local setup
+## Why Together Serverless
+
+OneContext treats inference as an application capability rather than infrastructure the
+developer needs to operate. Together Serverless hosts and serves the multimodal model,
+while the application sends context only when inference is needed. This keeps the demo
+focused on the application workflow instead of model deployment, GPU provisioning, or
+inference serving.
+
+## Run locally
 
 Requirements:
 
 - Node.js 20.9 or newer
 - npm
-- A Together Project API key and credits for live inference
+- A Together Project API key and credits only when using live inference
 
-Install dependencies:
+Install and create the local environment file:
 
 ```bash
 npm install
 ```
 
-Copy the environment template:
-
 ```powershell
 Copy-Item .env.example .env.local
 ```
 
-Run the application:
+Start the application:
 
 ```bash
 npm run dev
@@ -84,32 +108,33 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Environment variables
+### Sample mode
 
-Live inference:
+Sample mode is the default configuration and requires no API key:
+
+```env
+ONECONTEXT_DEMO_MODE=true
+```
+
+It validates the submitted form and returns a fixed example labeled
+`Sample response: no inference performed`. It does not inspect the uploaded content or
+call Together.
+
+### Live mode
 
 ```env
 TOGETHER_API_KEY=your_project_api_key
 ONECONTEXT_DEMO_MODE=false
 ```
 
-Never expose `TOGETHER_API_KEY` through a `NEXT_PUBLIC_` variable.
-
-No-cost sample mode:
-
-```env
-ONECONTEXT_DEMO_MODE=true
-```
-
-Sample mode validates the form and returns a fixed example. It does not inspect the
-uploaded content, call Together, or perform inference. The results panel labels this mode
-clearly.
+Live mode requires a valid Together Project API key and sufficient prepaid credits. Do
+not expose the key through a `NEXT_PUBLIC_` variable.
 
 ## Example input
 
 - Text: `This account cannot access the storefront, although the supplied password appears correct.`
 - Screenshot: a login page showing an account-locked error
-- WAV note: the reporter explains that the problem occurs in Chrome while another account works
+- Voice note: a WAV recording explaining that the issue occurs in Chrome while another account works
 
 Accepted inputs:
 
@@ -120,24 +145,25 @@ Accepted inputs:
 WAV support is intentional. The purpose is to demonstrate native multimodal reasoning in
 one inference call, not audio transcoding.
 
-## Important limitations
+## Limitations
 
-- This is a technical demonstration, not a production issue-management system.
-- It has no database, authentication, queues, agents, RAG, or persistent file storage.
+- This is a technical demo, not a production issue-management product.
+- It has no database, authentication, agents, RAG, queues, or persistent file storage.
 - Sample mode returns fixed data and performs no AI inference.
-- Live inference requires a valid Together Project API key and sufficient credits.
-- Uploaded files are held only for the request, but deployment platforms may impose lower
-  request-size limits.
-- Model output can vary and must not be treated as verified facts without review.
+- Live inference requires a valid Together Project API key and prepaid credits.
+- Hosting platforms may impose request-size limits below the application limits.
+- Model output can vary and should be reviewed before use.
 
-## Verification
+## References
+
+- [Together Inkling model](https://www.together.ai/models/inkling)
+- [Together structured outputs](https://docs.together.ai/docs/inference/chat/structured-outputs)
+- [Together vision input modes](https://docs.together.ai/docs/inference/vision/inputs)
+
+Run project checks with:
 
 ```bash
 npm run typecheck
 npm run lint
 npm run build
 ```
-
-The live model and API shape were selected from the current
-[Together Inkling model page](https://www.together.ai/models/inkling) and
-[Together structured-output documentation](https://docs.together.ai/docs/inference/chat/structured-outputs).
