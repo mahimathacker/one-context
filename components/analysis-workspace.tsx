@@ -53,7 +53,7 @@ function ResultPanel({
         {result && (
           <span className={`result-status ${result.meta.mode === "sample" ? "sample" : ""}`}>
             {result.meta.mode === "sample"
-              ? "Sample response — no inference performed"
+              ? "Sample response: no inference performed"
               : "Analysis complete"}
           </span>
         )}

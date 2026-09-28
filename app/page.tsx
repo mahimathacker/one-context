@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
           <p className="hero-copy">
             Give Inkling the written report, the screenshot, and the original voice note
-            together—without building separate transcription and vision pipelines.
+            together without building separate transcription and vision pipelines.
           </p>
 
           <div className="signal-line" aria-label="OneContext input flow">
@@ -58,6 +58,51 @@ export default function Home() {
         </section>
 
         <AnalysisWorkspace />
+
+        <section className="architecture" aria-labelledby="architecture-title">
+          <div className="architecture-intro">
+            <p className="eyebrow">Technical objective</p>
+            <h2 id="architecture-title">Keep the context together.</h2>
+            <p>
+              OneContext shows that a multimodal application does not always need a
+              transcription pipeline, a vision pipeline, and a separate reasoning model.
+            </p>
+          </div>
+
+          <div className="architecture-grid">
+            <article>
+              <header>
+                <span>Traditional</span>
+                <small>Multiple model handoffs</small>
+              </header>
+              <pre>{`Audio  -> Transcription model
+Image  -> Vision model
+Outputs -> Language model`}</pre>
+            </article>
+
+            <article className="unified-path">
+              <header>
+                <span>OneContext</span>
+                <small>One inference workflow</small>
+              </header>
+              <pre>{`Text + Image + Audio
+          |
+Together Serverless / Inkling
+          |
+Structured JSON result`}</pre>
+            </article>
+          </div>
+
+          <p className="architecture-claim">
+            Inkling receives the audio, image, and text together and reasons over them in
+            the same multimodal model.
+          </p>
+        </section>
+
+        <footer className="site-footer">
+          <strong>OneContext</strong>
+          <span>Technical demonstration, not a production issue-management product.</span>
+        </footer>
       </div>
     </main>
   );

@@ -147,7 +147,7 @@ export async function POST(request: Request) {
           "Confirm the account lock state, review the reason and unlock policy, and provide the user with an appropriate recovery path.",
       },
       meta: {
-        model: "No model — sample data",
+        model: "No model (sample data)",
         modalities,
         mode: "sample",
       },
